@@ -8,8 +8,26 @@ import time
 class Post:
 	""" Documentation post wrapper. """
 	def __init__(self, json):
+		self.id = json["id"]
+		
 		self.token_id = json["author"]["token_id"]
 		self.time = json["createtime"]
+		
+		self.word_count = len(json["content"].split())
+		self.file_count = len(json["files"])
+		
+		images = json["images"]
+		self.image_count = len(images)
+		self.audio_count = 0
+		for im in images:
+			try:
+				if im["voice"]["id"]:
+					self.audio_count += 1
+			except:
+				pass
+	
+	def __repr__(self):
+		return "<Post %d>" % self.id
 
 class DocumentFetcher:
 	"""
