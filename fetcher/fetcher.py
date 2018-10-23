@@ -3,6 +3,7 @@ from .sender import TokenSender
 
 import requests
 
+import logging
 import os
 import pickle
 import time
@@ -67,7 +68,7 @@ class DocumentFetcher:
 		
 		# Load timestamp from settings
 		self.stamp = self.settings.get("timestamp")
-		if not self.stamp:
+		if self.stamp == None:
 			self.stamp = 0
 	
 	def load_settings(self, pfile):
@@ -99,12 +100,13 @@ class DocumentFetcher:
 		""" Converts the post to tokens and sends them to blockchain API. """
 		tokens = self.converter.post2tokens(post)
 		self.sender.send(post.token_id, tokens)
+		logging.info("%s earned %d tokens" % (post.token_id, tokens))
 	
 	def find_new(self):
 		""" Searches for new posts and processes them. """
 		for post in self.fetch_post():
 			# Break when we reach older posts
-			if post.time < self.stamp:
+			if post.time <= self.stamp:
 				break
 			self.handle_post(post)
 	
@@ -116,8 +118,9 @@ class DocumentFetcher:
 	
 	def run(self, fetch_interval=600):
 		""" Runs the the fetching program. """
-		self.update_time()
+		logging.info("Running Document Fetcher")
 		while True:
+			logging.info("Looking for new posts")
 			self.find_new()
 			self.update_time()
 			time.sleep(fetch_interval)
