@@ -35,7 +35,7 @@ class Post:
 		self.id = json["id"]
 		
 		self.token_id = json["author"]["token_id"]
-		self.time = json["createtime"]
+		self.time = int(json["createtime"])
 		
 		self.word_count = len(json["content"].split())
 		self.file_count = len(json["files"])
