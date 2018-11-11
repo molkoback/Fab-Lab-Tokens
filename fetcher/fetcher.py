@@ -62,9 +62,8 @@ class DocumentFetcher:
 	def __init__(self, doc_api_url, token_api_url, **kwargs):
 		self.url = doc_api_url
 		self.settings = self.load_settings(kwargs.get("pfile", "fetcher.p"))
-		
 		self.converter = Converter()
-		self.sender = TokenSender(token_api_url)
+		self.sender = TokenSender(token_api_url, **kwargs)
 		
 		# Load timestamp from settings
 		self.stamp = self.settings.get("timestamp")

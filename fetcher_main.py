@@ -8,6 +8,8 @@ import sys
 # Document fetcher settings
 doc_api_url = "http://localhost:5000/api/contents/"
 token_api_url = "http://localhost:8080/api/"
+token_api_user = "document-fetcher"
+token_api_passwd = "password"
 fetch_interval = 10
 
 def init_logging():
@@ -26,5 +28,9 @@ def init_logging():
 # Run document fetcher
 if __name__ == "__main__":
 	init_logging()
-	df = DocumentFetcher(doc_api_url, token_api_url)
+	df = DocumentFetcher(
+		doc_api_url, token_api_url,
+		token_api_user=token_api_user,
+		token_api_passwd=token_api_passwd
+	)
 	df.run(fetch_interval=fetch_interval)
