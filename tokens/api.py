@@ -2,7 +2,7 @@
 # Document fetcher gives us tokens
 # Scheduler takes them
 
-from .blockchain import BlockChain
+from .bank import Bank
 
 import flask
 from flask_httpauth import HTTPBasicAuth
@@ -11,12 +11,13 @@ import json
 
 class TokenAPI(flask.Flask):
 	""" Token API Flask child class.  """
-	def __init__(self, **kwargs):
+	def __init__(self, eth_provider_url, eth_contract_addr, **kwargs):
 		super().__init__(__name__)
 		
 		self.allowed_apps = kwargs.get("allowed_apps", {})
 		self.auth = HTTPBasicAuth()
-		self.bc = BlockChain()
+		self.bank = Bank(eth_provider_url)
+		self.bank.set_contract_addr(eth_contract_addr)
 		
 		self.routes_create()
 	
@@ -51,11 +52,9 @@ class TokenAPI(flask.Flask):
 		""" Our GET API. """
 		if token_id == None:
 			return {"error": "Invalid parameters"}
-		elif not self.bc.token_id_valid(token_id):
-			return {"error": "Invalid token ID"}
 		return {
 			"error": "",
-			"tokens": self.bc.get_tokens(token_id)
+			"tokens": self.bank.get_tokens(token_id)
 		}
 	
 	def tokens_post(self, token_id, tokens):
@@ -70,13 +69,13 @@ class TokenAPI(flask.Flask):
 		if tokens <= 0:
 			tokens = abs(tokens)
 			try:
-				total = self.bc.withdraw(token_id, tokens)
+				total = self.bank.withdraw(token_id, tokens)
 			except Exception as e:
 				return {"error": str(e)}
 			deposited = 0
 			withdrawn = tokens
 		else:
-			total = self.bc.deposit(token_id, tokens)
+			total = self.bank.deposit(token_id, tokens)
 			deposited = tokens
 			withdrawn = 0
 		
