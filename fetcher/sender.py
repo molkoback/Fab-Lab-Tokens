@@ -18,10 +18,13 @@ class TokenSender:
 			"token_id": token_id,
 			"tokens": tokens
 		}
-		return requests.post(self.url, data=data, auth=auth).json()
+		try:
+			return requests.post(self.url, data=data, auth=auth).json()
+		except:
+			raise Exception("Couldn't send to %s" % self.url)
 	
 	def send(self, token_id, tokens):
 		""" Sends tokens to blockchain API. """
 		json = self.post(token_id, tokens)
 		if json["error"]:
-			raise Exception(json["error"])
+			raise Exception("Token API error: " + json["error"])

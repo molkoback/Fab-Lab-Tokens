@@ -29,10 +29,13 @@ def init_logging():
 # Run document fetcher
 if __name__ == "__main__":
 	init_logging()
-	df = DocumentFetcher(
-		doc_api_url, token_api_url,
-		token_api_user=token_api_user,
-		token_api_passwd=token_api_passwd,
-		pfile=pfile
-	)
-	df.run(fetch_interval=fetch_interval)
+	try:
+		df = DocumentFetcher(
+			doc_api_url, token_api_url,
+			token_api_user=token_api_user,
+			token_api_passwd=token_api_passwd,
+			pfile=pfile
+		)
+		df.run(fetch_interval=fetch_interval)
+	except Exception as err:
+		logging.error(str(err))

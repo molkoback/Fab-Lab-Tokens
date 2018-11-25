@@ -82,7 +82,10 @@ class DocumentFetcher:
 	
 	def get(self, page):
 		""" Returns documentation site API page json. """
-		return requests.get(self.url, params={"page": page}).json()
+		try:
+			return requests.get(self.url, params={"page": page}).json()
+		except:
+			raise Exception("Couldn't fetch from %s" % self.url)
 	
 	def fetch_post(self):
 		""" Yields posts from documentation site. """
