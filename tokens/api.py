@@ -52,6 +52,7 @@ class TokenAPI(flask.Flask):
 		""" Our GET API. """
 		if token_id == None:
 			return {"error": "Invalid parameters"}
+		token_id = token_id.lower()
 		return {
 			"error": "",
 			"tokens": self.bank.get_tokens(token_id)
@@ -61,6 +62,7 @@ class TokenAPI(flask.Flask):
 		""" Our POST API. """
 		if token_id == None or tokens == None:
 			return {"error": "Invalid parameters"}
+		token_id = token_id.lower()
 		try:
 			tokens = int(tokens)
 		except:

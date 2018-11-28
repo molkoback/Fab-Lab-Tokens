@@ -35,7 +35,7 @@ class Post:
 	def __init__(self, json):
 		self.id = json["id"]
 		
-		self.token_id = json["author"]["token_id"]
+		self.token_id = json["author"]["token_id"].lower()
 		self.time = int(json["createtime"])
 		
 		self.word_count = len(json["content"].split())
