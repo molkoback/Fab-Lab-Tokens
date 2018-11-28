@@ -123,6 +123,10 @@ class DocumentFetcher:
 		logging.info("Running Document Fetcher")
 		while True:
 			logging.info("Looking for new posts")
-			self.find_new()
-			self.update_time()
+			try:
+				self.find_new()
+			except Exception as err:
+				logging.error(str(err))
+			else:
+				self.update_time()
 			time.sleep(fetch_interval)
