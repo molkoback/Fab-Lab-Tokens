@@ -13,27 +13,30 @@ class Settings:
 	def __init__(self, pfile):
 		self.pfile = pfile
 		self.dict = {}
+		try:
+			self._load()
+		except:
+			self._save()
 	
-	def get(self, key):
-		if not key in self.dict:
-			return None
-		return self.dict[key]
-	
-	def set(self, key, val):
-		self.dict[key] = val
-	
-	def load(self):
+	def _load(self):
 		with open(self.pfile, "rb") as fp:
 			self.dict = pickle.load(fp)
 	
-	def save(self):
+	def _save(self):
 		with open(self.pfile, "wb") as fp:
 			pickle.dump(self.dict, fp)
+	
+	def get(self, key, default=None):
+		return self.dict.get(key, default)
+	
+	def set(self, key, val):
+		self.dict[key] = val
+		self._save()
 
 class Post:
 	""" Documentation post wrapper. """
 	def __init__(self, json):
-		self.id = json["id"]
+		self.id = int(json["id"])
 		
 		self.token_id = json["author"]["token_id"].lower()
 		self.time = int(json["createtime"])
@@ -61,24 +64,9 @@ class DocumentFetcher:
 	"""
 	def __init__(self, doc_api_url, token_api_url, **kwargs):
 		self.url = doc_api_url
-		self.settings = self.load_settings(kwargs.get("pfile", "fetcher.p"))
+		self.settings = Settings(kwargs.get("pfile", "fetcher.p"))
 		self.converter = Converter()
 		self.sender = TokenSender(token_api_url, **kwargs)
-		
-		# Load timestamp from settings
-		self.stamp = self.settings.get("timestamp")
-		if self.stamp == None:
-			self.stamp = 0
-	
-	def load_settings(self, pfile):
-		settings = Settings(pfile)
-		if os.path.isfile(pfile):
-			# Load settings from file
-			settings.load()
-		else:
-			# Create new settings file
-			settings.save()
-		return settings
 	
 	def get(self, page):
 		""" Returns documentation site API page json. """
@@ -108,15 +96,9 @@ class DocumentFetcher:
 		""" Searches for new posts and processes them. """
 		for post in self.fetch_post():
 			# Break when we reach older posts
-			if post.time <= self.stamp:
+			if post.time <= self.settings.get("timestamp", 0):
 				break
 			self.handle_post(post)
-	
-	def update_time(self):
-		""" Updates our timestamp and saves it to settings. """
-		self.stamp = int(time.time())
-		self.settings.set("timestamp", self.stamp)
-		self.settings.save()
 	
 	def run(self, fetch_interval=600):
 		""" Runs the the fetching program. """
@@ -128,5 +110,6 @@ class DocumentFetcher:
 			except Exception as err:
 				logging.error(str(err))
 			else:
-				self.update_time()
+				# Update timestamp
+				self.settings.set("timestamp", int(time.time()))
 			time.sleep(fetch_interval)
