@@ -8,8 +8,8 @@ with open("requirements.txt") as fp:
 
 setup(
 	name="fablab-tokens",
-	author="",
-	author_email="",
+	author="Eero Molkoselkä, Jonada Ferracaku",
+	author_email="eero.molkoselka@gmail.com, jonada.ferracaku@gmail.com",
 	url="https://github.com/molkoback/Fab-Lab-Tokens",
 	packages=["tokens", "fetcher"],
 	version="0.1.0",
@@ -17,5 +17,9 @@ setup(
 	description="Fab Lab token system software project",
 	long_description=readme,
 	install_requires=requirements,
-	classifiers=[]
+	classifiers=[
+		"Operating System :: OS Independent",
+		"Programming Language :: Python :: 3",
+		"Topic :: Internet"
+	]
 )
