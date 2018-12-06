@@ -48,9 +48,16 @@ class TokenAPI(flask.Flask):
 		""" Constructs a JSON HTTP response. """
 		return flask.jsonify(obj)
 	
+	def token_id_valid(self, token_id):
+		try:
+			int(token_id, 16)
+		except:
+			return False
+		return len(token_id) == 64
+	
 	def tokens_get(self, token_id):
 		""" Our GET API. """
-		if token_id == None:
+		if token_id == None or not self.token_id_valid(token_id):
 			return {"error": "Invalid parameters"}
 		token_id = token_id.lower()
 		return {
@@ -60,7 +67,7 @@ class TokenAPI(flask.Flask):
 	
 	def tokens_post(self, token_id, tokens):
 		""" Our POST API. """
-		if token_id == None or tokens == None:
+		if token_id == None or tokens == None or not self.token_id_valid(token_id):
 			return {"error": "Invalid parameters"}
 		token_id = token_id.lower()
 		try:
