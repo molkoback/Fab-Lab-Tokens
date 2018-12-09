@@ -1,26 +1,28 @@
 contract Bank {
-	address m_owner;
-	mapping (string => uint) m_tokens;
+	address private m_owner;
+	mapping (string => uint) private m_tokens;
 	
 	function Bank() public {
 		m_owner = msg.sender;
 	}
 	
-	function get_tokens(string token_id) constant returns(uint) {
+	function get_tokens(string token_id) constant public returns(uint) {
 		return m_tokens[token_id];
 	}
 	
-	function withdraw(string token_id, uint tokens) returns(bool) {
-		if (msg.sender != m_owner || tokens > m_tokens[token_id])
-			return false;
+	function withdraw(string token_id, uint tokens) public returns(int) {
+		if (msg.sender != m_owner)
+			return -1;
+		else if (tokens > m_tokens[token_id])
+			return -2;
 		m_tokens[token_id] -= tokens;
-		return true;
+		return 0;
 	}
 	
-	function deposit(string token_id, uint tokens) returns(bool) {
+	function deposit(string token_id, uint tokens) public returns(int) {
 		if (msg.sender != m_owner)
-			return false;
+			return -1;
 		m_tokens[token_id] += tokens;
-		return true;
+		return 0;
 	}
 }

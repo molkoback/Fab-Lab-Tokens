@@ -11,7 +11,8 @@ token_api_host = "localhost"
 token_api_port = 8080
 
 # Ethereum settings
-eth_provider_url = "http://127.0.0.1:8545"
+eth_provider_url = ""
+eth_priv_key = ""
 
 # Allowed API users
 allowed_apps = {
@@ -19,9 +20,9 @@ allowed_apps = {
 	"scheduler": "password"
 }
 
-def contract_deploy():
+def deploy():
 	print("Deploying Token API Contract")
-	bank = Bank(eth_provider_url)
+	bank = Bank(eth_provider_url, eth_priv_key)
 	addr = bank.contract_deploy()
 	print("Deployed: %s" % addr)
 	print("Generating contract file contract.py")
@@ -29,17 +30,17 @@ def contract_deploy():
 		fp.write("eth_contract_addr = \"%s\"\n" % addr)
 	print("Contract file generated")
 
+def run():
+	bank = Bank(eth_provider_url, eth_priv_key)
+	bank.set_contract_addr(eth_contract_addr)
+	api = TokenAPI(bank, allowed_apps=allowed_apps)
+	api.run(host=token_api_host, port=token_api_port)
+
 # Run token system
 if __name__ == "__main__":
 	try:
 		from contract import eth_contract_addr
 	except:
-		contract_deploy()
-	from contract import eth_contract_addr
-	
-	api = TokenAPI(
-		eth_provider_url,
-		eth_contract_addr,
-		allowed_apps=allowed_apps
-	)
-	api.run(host=token_api_host, port=token_api_port)
+		deploy()
+		from contract import eth_contract_addr
+	run()

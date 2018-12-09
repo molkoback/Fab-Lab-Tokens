@@ -1,7 +1,3 @@
-# Flask API
-# Document fetcher gives us tokens
-# Scheduler takes them
-
 from .bank import Bank
 
 import flask
@@ -11,13 +7,12 @@ import json
 
 class TokenAPI(flask.Flask):
 	""" Token API Flask child class.  """
-	def __init__(self, eth_provider_url, eth_contract_addr, **kwargs):
+	def __init__(self, bank, **kwargs):
 		super().__init__(__name__)
 		
 		self.allowed_apps = kwargs.get("allowed_apps", {})
 		self.auth = HTTPBasicAuth()
-		self.bank = Bank(eth_provider_url)
-		self.bank.set_contract_addr(eth_contract_addr)
+		self.bank = bank
 		
 		self.routes_create()
 	
