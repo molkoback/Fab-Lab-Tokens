@@ -12,6 +12,8 @@ setup(
 	author_email="eero.molkoselka@gmail.com, jonada.ferracaku@gmail.com",
 	url="https://github.com/molkoback/Fab-Lab-Tokens",
 	packages=["tokens", "fetcher"],
+	package_data={"tokens": ["sol/bank.sol"]},
+	include_package_data=True,
 	version="0.1.0",
 	license="MIT",
 	description="Fab Lab token system software project",
