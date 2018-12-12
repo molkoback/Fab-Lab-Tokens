@@ -1,8 +1,9 @@
 from tokens import app, auth, bank
+from tokens.bank import BankException
 
 from flask import jsonify, request
 
-def tokens_resp(obj):
+def api_resp(obj):
 	""" Constructs a JSON HTTP response. """
 	return jsonify(obj)
 
@@ -37,7 +38,7 @@ def tokens_post(token_id, tokens):
 		tokens = abs(tokens)
 		try:
 			total = bank.withdraw(token_id, tokens)
-		except Exception as e:
+		except BankException as e:
 			return {"error": str(e)}
 		deposited = 0
 		withdrawn = tokens
@@ -68,7 +69,7 @@ def get_pw(user):
 def get_api():
 	token_id = request.args.get("token_id")
 	obj = tokens_get(token_id)
-	return tokens_resp(obj)
+	return api_resp(obj)
 
 @app.route("/api/", methods=["POST"])
 @auth.login_required
@@ -76,4 +77,4 @@ def post_api():
 	token_id = request.form.get("token_id")
 	tokens = request.form.get("tokens")
 	obj = tokens_post(token_id, tokens)
-	return tokens_resp(obj)
+	return api_resp(obj)

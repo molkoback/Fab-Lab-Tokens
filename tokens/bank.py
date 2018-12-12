@@ -3,6 +3,12 @@ import solc
 
 import os
 
+class EthException(Exception):
+	pass
+
+class BankException(Exception):
+	pass
+
 class Bank:
 	""" Our Ethereum bank Web3 implementation. """
 	def __init__(self, http_url, priv_key):
@@ -60,15 +66,17 @@ class Bank:
 	def withdraw(self, token_id, tokens):
 		func = self._bank_inst.functions.withdraw(token_id, tokens)
 		ret = self._call(func)
-		if ret < 0:
-			raise Exception("Not enough tokens")
+		if ret == -1:
+			raise EthException("Not our contract")
+		elif ret == -2:
+			raise BankException("Not enough tokens")
 		self._transact(func)
 		return self.get_tokens(token_id)
 	
 	def deposit(self, token_id, tokens):
 		func = self._bank_inst.functions.deposit(token_id, tokens)
 		ret = self._call(func)
-		if ret < 0:
-			return 0
+		if ret == -1:
+			raise EthException("Not our contract")
 		self._transact(func)
 		return self.get_tokens(token_id)
