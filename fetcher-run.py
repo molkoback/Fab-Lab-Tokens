@@ -12,13 +12,13 @@ token_api_user = "document-fetcher"
 token_api_passwd = "password"
 fetch_interval = 10
 pfile = "fetcher.p"
+loglevel = logging.INFO
 
 def init_logging():
-	level = logging.INFO
 	root = logging.getLogger()
-	root.setLevel(level)
+	root.setLevel(loglevel)
 	ch = logging.StreamHandler(sys.stdout)
-	ch.setLevel(level)
+	ch.setLevel(loglevel)
 	formatter = logging.Formatter(
 		"[%(asctime)s][%(levelname)s] %(message)s",
 		datefmt="%H:%M:%S"
