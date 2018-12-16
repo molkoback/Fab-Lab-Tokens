@@ -1,0 +1,15 @@
+Metadata-Version: 1.1
+Name: fablab-tokens
+Version: 0.1.0
+Summary: Fab Lab token system software project
+Home-page: https://github.com/molkoback/Fab-Lab-Tokens
+Author: Eero Molkoselkä, Jonada Ferracaku
+Author-email: eero.molkoselka@gmail.com, jonada.ferracaku@gmail.com
+License: MIT
+Description: # Fab-Lab-Tokens
+        Fab Lab token system software project
+        
+Platform: UNKNOWN
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Internet
